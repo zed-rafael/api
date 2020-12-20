@@ -7,6 +7,8 @@ import net.uni5.ztec.api.entities.Tarefa;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 @Repository
@@ -17,6 +19,16 @@ public class TarefaDAO {
     private static final String SQL_DELETE = "DELETE FROM tarefas WHERE id=?";
     private static final String SQL_SELECT = "SELECT id, usuario_id, titulo, descricao, data_tarefa FROM tarefas";
     private static final String SQL_SELECT_POR_ID = "SELECT id, usuario_id, titulo, descricao, data_tarefa FROM tarefas WHERE id=?";
+
+    private static Connection getConnection() throws URISyntaxException, SQLException {
+        URI dbUri = new URI(System.getenv("JDBC_DATABASE_URL"));
+
+        String username = dbUri.getUserInfo().split(":")[0];
+        String password = dbUri.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
+
+        return DriverManager.getConnection(dbUrl, username, password);
+    }
 
     public Tarefa buscarPorId(Long id) {
         Tarefa tarefa = null;
@@ -109,8 +121,21 @@ public class TarefaDAO {
         Tarefa tarefa;
         try {
             Class.forName("org.postgresql.Driver");
-            Connection con = DriverManager.getConnection("jdbc:postgresql://pgsql.ztec.uni5.net/ztec", "ztec", "sxred65");
+            //Connection con = DriverManager.getConnection("jdbc:postgresql://pgsql.ztec.uni5.net/ztec", "ztec", "sxred65");
+            Connection con = getConnection();
             Statement statement = con.createStatement();
+
+            String Sql_Create_database = "CREATE TABLE Tarefas (" +
+                    "id, usuario_id, titulo, descricao, data_tarefa " +
+                    "id serial PRIMARY KEY, " +
+                    "usuario_id INT NOT NULL, " +
+                    "titulo VARCHAR(50) NOT NULL, " +
+                    "descricao VARCHAR(255) NOT NULL, " +
+                    "data_tarefa TIMESTAMP NOT NULL )";
+
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(Sql_Create_database);
+
             PreparedStatement pStatement = con.prepareStatement(SQL_SELECT);
             ResultSet rs = pStatement.executeQuery();
             while (rs.next()) {
@@ -126,7 +151,7 @@ public class TarefaDAO {
             pStatement.close();
             rs.close();
             return lista;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException | URISyntaxException e) {
             e.printStackTrace();
             return null;
         }

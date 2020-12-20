@@ -31,7 +31,7 @@ public class TarefaController {
     private TarefaService tarefaService;
 
     @GetMapping(value = "")
-    public ResponseEntity<Response<List<Tarefa>>> get() throws NoSuchAlgorithmException, SQLException {
+    public ResponseEntity<Response<List<Tarefa>>> get() throws NoSuchAlgorithmException {
         Response<List<Tarefa>> response = new Response<List<Tarefa>>();
         List<Tarefa> lista = this.tarefaService.listar();
         response.setData(lista);
