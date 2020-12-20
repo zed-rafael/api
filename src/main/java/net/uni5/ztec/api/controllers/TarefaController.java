@@ -1,6 +1,7 @@
 package net.uni5.ztec.api.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class TarefaController {
     private TarefaService tarefaService;
 
     @GetMapping(value = "")
-    public ResponseEntity<Response<List<Tarefa>>> get() throws NoSuchAlgorithmException {
+    public ResponseEntity<Response<List<Tarefa>>> get() throws NoSuchAlgorithmException, SQLException {
         Response<List<Tarefa>> response = new Response<List<Tarefa>>();
         List<Tarefa> lista = this.tarefaService.listar();
         response.setData(lista);
