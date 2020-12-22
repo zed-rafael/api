@@ -1,13 +1,14 @@
 package net.uni5.ztec.api.entities;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Tarefa {
     private Long id;
     private Integer usuarioId;
     private String titulo;
     private String descricao;
-    private LocalDateTime dataTarefa;
+    private Date dataTarefa;
 
     public Tarefa() {
 
@@ -45,11 +46,11 @@ public class Tarefa {
         this.descricao = descricao;
     }
 
-    public LocalDateTime getDataTarefa() {
+    public Date getDataTarefa() {
         return dataTarefa;
     }
 
-    public void setDataTarefa(LocalDateTime dataTarefa) {
+    public void setDataTarefa(Date dataTarefa) {
         this.dataTarefa = dataTarefa;
     }
 
@@ -57,4 +58,5 @@ public class Tarefa {
     public String toString() {
         return "Tarefa [Id=" + id + ", Título=" + titulo + ", Descrição=" + descricao + "]";
     }
+
 }

@@ -14,7 +14,7 @@ import java.util.Properties;
 @Repository
 public class TarefaDAO {
 
-    private static final String SQL_INSERT = "INSERT INTO tarefas (usuario_id, titulo, descricao) VALUES (?,?,?)";
+    private static final String SQL_INSERT = "INSERT INTO tarefas (usuario_id, titulo, descricao, data_tarefa) VALUES (?,?,?,NOW())";
     private static final String SQL_UPDATE = "UPDATE tarefas SET usuario_id=?, titulo=?, descricao=? WHERE id=?";
     private static final String SQL_DELETE = "DELETE FROM tarefas WHERE id=?";
     private static final String SQL_SELECT = "SELECT id, usuario_id, titulo, descricao, data_tarefa FROM tarefas";
@@ -44,7 +44,7 @@ public class TarefaDAO {
                 tarefa.setUsuarioId(rs.getInt("usuario_id"));
                 tarefa.setTitulo(rs.getString("titulo"));
                 tarefa.setDescricao(rs.getString("descricao"));
-                tarefa.setDataTarefa(rs.getTimestamp("data_tarefa").toLocalDateTime());
+                tarefa.setDataTarefa(rs.getDate("data_tarefa"));
             }
             rs.close();
             pStatement.close();
@@ -121,20 +121,20 @@ public class TarefaDAO {
         Tarefa tarefa;
         try {
             Class.forName("org.postgresql.Driver");
-            //Connection con = DriverManager.getConnection("jdbc:postgresql://pgsql.ztec.uni5.net/ztec", "ztec", "sxred65");
-            Connection con = getConnection();
-            Statement statement = con.createStatement();
+            Connection con = DriverManager.getConnection("jdbc:postgresql://pgsql.ztec.uni5.net/ztec", "ztec", "sxred65");
 
-            String Sql_Create_database = "CREATE TABLE Tarefas (" +
-                    "id, usuario_id, titulo, descricao, data_tarefa " +
-                    "id serial PRIMARY KEY, " +
-                    "usuario_id INT NOT NULL, " +
-                    "titulo VARCHAR(50) NOT NULL, " +
-                    "descricao VARCHAR(255) NOT NULL, " +
-                    "data_tarefa TIMESTAMP NOT NULL )";
 
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(Sql_Create_database);
+//            Connection con = getConnection()
+//            String Sql_Create_database = "CREATE TABLE Tarefas (" +
+//                    "id, usuario_id, titulo, descricao, data_tarefa " +
+//                    "id serial PRIMARY KEY, " +
+//                    "usuario_id INT NOT NULL, " +
+//                    "titulo VARCHAR(50) NOT NULL, " +
+//                    "descricao VARCHAR(255) NOT NULL, " +
+//                    "data_tarefa TIMESTAMP NOT NULL )";
+//
+//            Statement stmt = con.createStatement();
+//            stmt.executeUpdate(Sql_Create_database);
 
             PreparedStatement pStatement = con.prepareStatement(SQL_SELECT);
             ResultSet rs = pStatement.executeQuery();
@@ -144,14 +144,14 @@ public class TarefaDAO {
                 tarefa.setUsuarioId(rs.getInt("usuario_id"));
                 tarefa.setTitulo(rs.getString("titulo"));
                 tarefa.setDescricao(rs.getString("descricao"));
-                tarefa.setDataTarefa(rs.getTimestamp("data_tarefa").toLocalDateTime());
+                tarefa.setDataTarefa(rs.getDate("data_tarefa"));
                 lista.add(tarefa);
             }
             con.close();
             pStatement.close();
             rs.close();
             return lista;
-        } catch (SQLException | ClassNotFoundException | URISyntaxException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }

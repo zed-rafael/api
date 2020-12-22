@@ -39,7 +39,7 @@ public class TarefaController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<Tarefa>> post(@RequestBody Tarefa tarefa, BindingResult result) throws NoSuchAlgorithmException {
+    public ResponseEntity<Response<Tarefa>> post(@Valid @RequestBody Tarefa tarefa, BindingResult result) throws NoSuchAlgorithmException {
         log.info("Atualizando funcionário: {}", tarefa.toString());
         Response<Tarefa> response = new Response<Tarefa>();
 
@@ -48,9 +48,9 @@ public class TarefaController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        //Long idTarefa = this.tarefaService.inserirTarefa(tarefa);
-//        tarefa.setId(idTarefa);
-//        response.setData(tarefa);
+        Long idTarefa = this.tarefaService.inserirTarefa(tarefa);
+        tarefa.setId(idTarefa);
+        response.setData(tarefa);
 
         return ResponseEntity.ok(response);
     }
